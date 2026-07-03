@@ -1,0 +1,635 @@
+﻿<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Pro Service Premium — 2FA TOTP Code Generator. Secure, offline, instant." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Pro Service Premium" />
+  <meta property="og:description" content="2FA TOTP Code Generator — Secure & Offline" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#080814" />
+  <title>Pro Service Premium</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #080814;
+      color: #e0e0f0;
+      font-family: 'Segoe UI', 'Khmer OS', Tahoma, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ───── Hero ───── */
+    .hero {
+      text-align: center;
+      padding: 52px 24px 40px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      border-radius: 999px;
+      padding: 7px 20px;
+      font-size: 0.82rem;
+      color: #c4b5fd;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff 20%, #c4b5fd 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 0.92rem;
+      color: #6b7280;
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* ───── Grid ───── */
+    .grid {
+      max-width: 520px;
+      margin: 0 auto 60px;
+      padding: 0 22px;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 1.85rem; }
+    }
+
+    /* ───── Card ───── */
+    .card {
+      background: #0f0f1e;
+      border: 1px solid #1c1c34;
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    /* ───── Card Header ───── */
+    .ch {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .ch-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .timer-pill {
+      background: rgba(0, 212, 177, 0.08);
+      border: 1px solid rgba(0, 212, 177, 0.25);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 0.78rem;
+      color: #00d4b1;
+      transition: all 0.3s;
+    }
+
+    .timer-pill.exp {
+      background: rgba(248, 113, 113, 0.1);
+      border-color: rgba(248, 113, 113, 0.35);
+      color: #f87171;
+    }
+
+    /* ───── Code Display Box ───── */
+    .code-box {
+      background: #060610;
+      border: 1px solid #16163a;
+      border-radius: 14px;
+      padding: 30px 20px 16px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .code-num {
+      display: block;
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: 12px;
+      font-family: 'Courier New', 'Lucida Console', monospace;
+      color: #00d4b1;
+      text-shadow: 0 0 28px rgba(0, 212, 177, 0.55);
+      margin-bottom: 20px;
+      line-height: 1;
+      transition: color 0.4s, text-shadow 0.4s;
+    }
+
+    .code-num.exp {
+      color: #f87171;
+      text-shadow: 0 0 28px rgba(248, 113, 113, 0.55);
+    }
+
+    .pbar-track {
+      height: 3px;
+      background: #1a1a30;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .pbar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #007f6e, #00d4b1);
+      transition: width 1s linear, background 0.4s;
+    }
+
+    .pbar-fill.exp {
+      background: linear-gradient(90deg, #991b1b, #f87171);
+    }
+
+    /* ───── Copy Button ───── */
+    .btn-copy {
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #6d28d9, #7c3aed, #8b5cf6);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.97rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: opacity 0.2s, transform 0.15s, background 0.35s;
+      margin-bottom: 22px;
+      letter-spacing: 0.4px;
+    }
+
+    .btn-copy:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-copy:active { transform: scale(0.98); }
+    .btn-copy.ok { background: linear-gradient(135deg, #064e3b, #047857); }
+
+    .divider { height: 1px; background: #1c1c34; margin-bottom: 20px; }
+
+    /* ───── Secret Key Section ───── */
+    .sk-label {
+      font-size: 0.78rem;
+      color: #6b7280;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      margin-bottom: 10px;
+    }
+
+    .sk-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .sk-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .sk-input {
+      width: 100%;
+      background: #08081a;
+      border: 1px solid #1c1c34;
+      border-radius: 10px;
+      padding: 11px 44px 11px 14px;
+      color: #d1d5db;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+      letter-spacing: 2px;
+    }
+
+    .sk-input:focus { border-color: #6d28d9; }
+
+    .btn-eye {
+      position: absolute;
+      right: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #4b5563;
+      cursor: pointer;
+      font-size: 1.05rem;
+      transition: color 0.2s;
+      line-height: 1;
+    }
+
+    .btn-eye:hover { color: #9ca3af; }
+
+    .btn-gen {
+      background: #12122a;
+      border: 1px solid #1c1c34;
+      border-radius: 10px;
+      color: #a78bfa;
+      padding: 11px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .btn-gen:hover { background: #1e1a40; }
+
+    .sk-hint {
+      font-size: 0.74rem;
+      color: #374151;
+      line-height: 1.65;
+    }
+
+    /* ── Our Products Button ── */
+    .btn-products {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border: none;
+      border-radius: 999px;
+      padding: 10px 24px;
+      color: #000;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 18px;
+      transition: opacity 0.2s, transform 0.15s;
+      letter-spacing: 0.3px;
+    }
+    .btn-products:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── Modal Overlay ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 30px 16px;
+    }
+    .modal-overlay.open { display: block; }
+
+    .modal-box {
+      background: #0f0f1e;
+      border: 1px solid #2a2a4a;
+      border-radius: 18px;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 28px;
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .modal-close {
+      background: #1c1c34;
+      border: 1px solid #2a2a4a;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      color: #9ca3af;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: #2a1a1a; color: #f87171; }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .product-img {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #2a2a4a;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: block;
+    }
+    .product-img:hover {
+      transform: scale(1.03);
+      border-color: #f59e0b;
+      box-shadow: 0 4px 20px rgba(245,158,11,0.3);
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 88vh;
+      border-radius: 12px;
+      box-shadow: 0 0 60px rgba(0,0,0,0.8);
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 18px;
+      right: 22px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      font-size: 1.6rem;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.2); }
+
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="badge">🛡️ ប្រព័ន្ធផ្ទៀងផ្ទាត់សុវត្ថិភាពខ្លួន</div>
+  <h1>Pro Service Premium</h1>
+  <p>ប្រព័ន្ធគណនាលេខក្នុងផ្ទៀងផ្ទាត់ (TOTP) ១០០% ដើម្បីធានាសុវត្ថិភាព
+    ក្នុងការការពារគណនី ជាន ការផ្ទៀងផ្ទាត់ខ្លួនបុគ្គល។</p>
+  <button class="btn-products" onclick="openProducts()">
+    🛍️ Our Products
+  </button>
+</div>
+
+<!-- PRODUCTS MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeOnOverlay(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">🛍️ Our Products</span>
+      <button class="modal-close" onclick="closeProducts()">✕</button>
+    </div>
+    <div class="products-grid">
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_30_16 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_32_02 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_34_08 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_35_53 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_37_10 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_39_29 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_44_00 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_45_54 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_47_40 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_51_55 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_54_51 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_57_57 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 04_59_44 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 05_01_13 PM.png" onclick="openLightbox(this.src)" />
+      <img class="product-img" src="image/ChatGPT Image Jun 8, 2026, 05_02_56 PM.png" onclick="openLightbox(this.src)" />
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" />
+</div>
+
+<!-- GRID -->
+<div class="grid">
+
+  <!-- LEFT: Code Display -->
+  <div class="card">
+
+    <div class="ch">
+      <div class="ch-label">⚡ លេខផ្ទៀងផ្ទាត់បច្ចុប្បន្ន</div>
+      <div class="timer-pill" id="timer">ផ្លាស់ប្ដូរក្នុង: -- វិ</div>
+    </div>
+
+    <div class="code-box">
+      <span class="code-num" id="code">--- ---</span>
+      <div class="pbar-track">
+        <div class="pbar-fill" id="pbar" style="width:100%"></div>
+      </div>
+    </div>
+
+    <button class="btn-copy" id="btn-copy" onclick="copyCode()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.3" stroke-linecap="round">
+        <rect x="9" y="9" width="13" height="13" rx="2"/>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      ចម្លងលេខ ២FA
+    </button>
+
+    <div class="divider"></div>
+
+    <div class="sk-label">🔑 គូសសោរសម្ងាត់ (SECRET KEY)</div>
+    <div class="sk-row">
+      <div class="sk-wrap">
+        <input type="text" class="sk-input" id="sk-input"
+               placeholder="បញ្ចូល Secret Key (Base32)…"
+               oninput="onKey(this.value)"
+               onpaste="handlePaste(event)"
+               autocomplete="off" spellcheck="false"
+               style="letter-spacing:2px" />
+        <button class="btn-eye" id="btn-eye" onclick="toggleEye()">👁</button>
+      </div>
+      <button class="btn-gen" onclick="genSecret()">↻ បង្កើតសោរ</button>
+    </div>
+    <p class="sk-hint">
+      បញ្ចូលឬចម្លងសោរសម្ងាត់ (Base32) ដើម្បីបង្ហាញ 2FA Code ។
+      ចុច "↻ បង្កើតសោរ" ដើម្បីបង្កើត Secret Key ថ្មីដោយស្វ័យប្រវត្ត។
+    </p>
+
+  </div>
+
+</div>
+
+<script>
+
+/* Base32 decode */
+function b32(s) {
+  const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  const c = s.toUpperCase().replace(/[\s=]/g, '');
+  let bits = 0, val = 0;
+  const out = [];
+  for (const ch of c) {
+    const i = A.indexOf(ch);
+    if (i < 0) continue;
+    val = (val << 5) | i; bits += 5;
+    if (bits >= 8) { out.push((val >>> (bits - 8)) & 0xff); bits -= 8; }
+  }
+  return new Uint8Array(out);
+}
+
+/* TOTP (RFC 6238) */
+async function totp(secret, step = 30, digits = 6) {
+  const key = b32(secret);
+  if (!key.length) return null;
+  const t = Math.floor(Date.now() / 1000 / step);
+  const buf = new ArrayBuffer(8);
+  new DataView(buf).setUint32(4, t >>> 0, false);
+  const ck = await crypto.subtle.importKey(
+    'raw', key, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+  const sig = new Uint8Array(await crypto.subtle.sign('HMAC', ck, buf));
+  const off = sig[sig.length - 1] & 0x0f;
+  const num = ((sig[off]     & 0x7f) << 24) |
+              ((sig[off + 1] & 0xff) << 16) |
+              ((sig[off + 2] & 0xff) << 8)  |
+               (sig[off + 3] & 0xff);
+  return String(num % 10 ** digits).padStart(digits, '0');
+}
+
+/* Generate random Base32 secret */
+function genSecret() {
+  const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  const arr = new Uint8Array(20);
+  crypto.getRandomValues(arr);
+  const s = Array.from(arr).map(b => A[b % 32]).join('');
+  const inp = document.getElementById('sk-input');
+  inp.value = s;
+  inp.type = 'text';
+  document.getElementById('btn-eye').textContent = '🙈';
+  onKey(s);
+}
+
+/* Handle paste — strip whitespace, trigger update */
+function handlePaste(e) {
+  e.preventDefault();
+  const pasted = (e.clipboardData || window.clipboardData).getData('text');
+  const clean = pasted.trim().replace(/\s/g, '');
+  const inp = document.getElementById('sk-input');
+  inp.value = clean;
+  onKey(clean);
+}
+
+/* Eye toggle */
+function toggleEye() {
+  const inp = document.getElementById('sk-input');
+  const btn = document.getElementById('btn-eye');
+  if (inp.type === 'text') { inp.type = 'password'; btn.textContent = '👁'; }
+  else                     { inp.type = 'text';     btn.textContent = '🙈'; }
+}
+
+/* Secret input handler */
+let curSecret = '';
+function onKey(val) {
+  curSecret = val.trim().replace(/\s/g, '');
+}
+
+/* Copy code */
+const SMARTLINK = 'https://www.effectivecpmnetwork.com/anpnnza8vx?key=809275d0a70e5e4c7a35e9f5cae9f659';
+
+function copyCode() {
+  const raw = document.getElementById('code').textContent.replace(/\s/g, '');
+  if (raw === '------') return;
+  window.open(SMARTLINK, '_blank', 'noopener,noreferrer');
+  navigator.clipboard.writeText(raw).then(() => {
+    const btn = document.getElementById('btn-copy');
+    btn.classList.add('ok');
+    btn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> ✅ Copied!';
+    setTimeout(() => {
+      btn.classList.remove('ok');
+      btn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> ចម្លងលេខ ២FA';
+    }, 2000);
+  });
+}
+
+/* Live tick every second */
+async function tick() {
+  const STEP = 30;
+  const now  = Math.floor(Date.now() / 1000);
+  const rem  = STEP - (now % STEP);
+  const pct  = (rem / STEP) * 100;
+  const exp  = rem <= 5;
+
+  const timerEl = document.getElementById('timer');
+  timerEl.textContent = 'ផ្លាស់ប្ដូរក្នុង: ' + rem + ' វិ';
+  timerEl.className = 'timer-pill' + (exp ? ' exp' : '');
+
+  const pb = document.getElementById('pbar');
+  pb.style.width = pct + '%';
+  pb.className = 'pbar-fill' + (exp ? ' exp' : '');
+
+  const codeEl = document.getElementById('code');
+  if (curSecret && b32(curSecret).length > 0) {
+    const c = await totp(curSecret);
+    if (c) {
+      codeEl.textContent = c.slice(0, 3) + ' ' + c.slice(3);
+      codeEl.className = 'code-num' + (exp ? ' exp' : '');
+    } else {
+      codeEl.textContent = '--- ---';
+      codeEl.className = 'code-num';
+    }
+  } else {
+    codeEl.textContent = '--- ---';
+    codeEl.className = 'code-num';
+  }
+
+}
+
+/* Products modal */
+function openProducts()  { document.getElementById('modal-overlay').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeProducts() { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }
+function closeOnOverlay(e) { if (e.target === document.getElementById('modal-overlay')) closeProducts(); }
+
+/* Lightbox */
+function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('open'); }
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
+/* keyboard close */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { closeProducts(); closeLightbox(); }
+});
+
+tick();
+setInterval(tick, 1000);
+
+document.getElementById('sk-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') onKey(e.target.value);
+});
+
+</script>
+</body>
+</html>
